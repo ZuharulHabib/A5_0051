@@ -27,89 +27,89 @@ import com.example.klinikhewan.ui.pages.perawatan.viewmodel.UpdatePerawatanViewM
 object PenyediaViewModel{
     val Factory = viewModelFactory {
         initializer {
-            HomeViewModel(aplikasiKlinikGw().container.pasienRepository)
+            HomeViewModel(aplikasiKlinik().container.pasienRepository)
         }
         initializer {
-            HomeJenisViewModel(aplikasiKlinikGw().container.jenisRepository)
+            HomeJenisViewModel(aplikasiKlinik().container.jenisRepository)
         }
         initializer {
-            HomeDokterViewModel(aplikasiKlinikGw().container.dokterRepository)
+            HomeDokterViewModel(aplikasiKlinik().container.dokterRepository)
         }
         initializer {
-            HomePerawatanViewModel(aplikasiKlinikGw().container.perawatanRepository)
+            HomePerawatanViewModel(aplikasiKlinik().container.perawatanRepository)
         }
         initializer {
             InsertPsnViewModel(
-                aplikasiKlinikGw().container.pasienRepository,
-                aplikasiKlinikGw().container.jenisRepository
+                aplikasiKlinik().container.pasienRepository,
+                aplikasiKlinik().container.jenisRepository
             )
         }
         initializer {
             InsertPrwtnViewModel(
-                aplikasiKlinikGw().container.pasienRepository,
-                aplikasiKlinikGw().container.dokterRepository,
-                aplikasiKlinikGw().container.perawatanRepository
+                aplikasiKlinik().container.pasienRepository,
+                aplikasiKlinik().container.dokterRepository,
+                aplikasiKlinik().container.perawatanRepository
             )
         }
         initializer {
-            InsertJnsViewModel(aplikasiKlinikGw().container.jenisRepository)
+            InsertJnsViewModel(aplikasiKlinik().container.jenisRepository)
         }
         initializer {
-            InsertDokterViewModel(aplikasiKlinikGw().container.dokterRepository)
+            InsertDokterViewModel(aplikasiKlinik().container.dokterRepository)
         }
         initializer {
             DetailJenisViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.jenisRepository
+                aplikasiKlinik().container.jenisRepository
             )
         }
         initializer {
             DetailViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.pasienRepository
+                aplikasiKlinik().container.pasienRepository
             )
         }
         initializer {
             DetailDokterViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.dokterRepository
+                aplikasiKlinik().container.dokterRepository
             )
         }
         initializer {
             UpdateViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.pasienRepository,
+                aplikasiKlinik().container.pasienRepository,
             )
         }
         initializer {
             UpdateJenisViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.jenisRepository
+                aplikasiKlinik().container.jenisRepository
             )
         }
         initializer {
             UpdateDokterViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.dokterRepository
+                aplikasiKlinik().container.dokterRepository
             )
         }
         initializer {
             UpdatePerawatanViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.pasienRepository,
-                aplikasiKlinikGw().container.perawatanRepository,
-                aplikasiKlinikGw().container.dokterRepository
+                aplikasiKlinik().container.pasienRepository,
+                aplikasiKlinik().container.perawatanRepository,
+                aplikasiKlinik().container.dokterRepository
             )
         }
         initializer {
             DetailPerawatanViewModel(
                 createSavedStateHandle(),
-                aplikasiKlinikGw().container.perawatanRepository
+                aplikasiKlinik().container.perawatanRepository
             )
         }
     }
 }
 
 
-fun CreationExtras.aplikasiKlinikGw(): KlinikHewanApplication =
+fun CreationExtras.aplikasiKlinik(): KlinikHewanApplication =
     (this[ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY] as KlinikHewanApplication)

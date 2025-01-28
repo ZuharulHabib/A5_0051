@@ -5,6 +5,11 @@ interface DestinasiNavigasi {
     val titleRes: String
 }
 
+object Screen : DestinasiNavigasi {
+    override val route = "home"
+    override val titleRes = "Home"
+}
+
 object Home : DestinasiNavigasi {
     override val route = "Daftar Pasien"
     override val titleRes = "Data Pasien"
@@ -12,12 +17,17 @@ object Home : DestinasiNavigasi {
 
 object HomeJenis : DestinasiNavigasi {
     override val route = "home_jenis"
-    override val titleRes = "Home Data Jenis"
+    override val titleRes = "Data Jenis"
 }
 
 object HomeDokter : DestinasiNavigasi {
     override val route = "home_dokter"
-    override val titleRes = "Home Data Dokter"
+    override val titleRes = "Data Dokter"
+}
+
+object HomePerawatan : DestinasiNavigasi {
+    override val route = "Data Perawatan"
+    override val titleRes = "Riwayat Perawatan"
 }
 
 object AddPasien : DestinasiNavigasi {
@@ -35,17 +45,16 @@ object AddDokter : DestinasiNavigasi {
     override val titleRes = "Entry Data Dokter"
 }
 
+object AddPerawatan : DestinasiNavigasi {
+    override val route = "Tambah Perawatan"
+    override val titleRes = "Entry Data Perawatan"
+}
+
 object UpdatePasien: DestinasiNavigasi {
     override val route = "update pasien"
     override val titleRes = "Update Pasien"
     const val idPASIEN = "idhewan"
     val routeWithArg = "$route/{$idPASIEN}"
-}
-object UpdateDokter: DestinasiNavigasi {
-    override val route = "update dokter"
-    override val titleRes = "Update Dokter"
-    const val idDOKTER = "idDokter"
-    val routeWithArg = "$route/{$idDOKTER}"
 }
 
 object DesttinasiDetailPasien: DestinasiNavigasi {
@@ -55,19 +64,25 @@ object DesttinasiDetailPasien: DestinasiNavigasi {
     val routeWithArg = "$route/{$idPASIEN}"
 }
 
-object DestinasiDetailDokter : DestinasiNavigasi {
-    override val route = "detail dokter"
-    override val titleRes = "Detail dokter"
-    const val idDOKTER = "id_dokter"
-    val routeWithArg = "$route/{$idDOKTER}"
-}
-
-
 object DestinasiDetailJenis : DestinasiNavigasi {
     override val route = "detail jenis"
     override val titleRes = "Detail Jenis"
     const val idJENIS = "idjenis"
     val routeWithArg = "$route/{$idJENIS}"
+}
+
+object DestinasiDetailDokter : DestinasiNavigasi{
+    override val route = "detail dokter"
+    override val titleRes = "Detail Dokter"
+    const val idDOKTER = "iddokter"
+    val routeWithArg = "$route/{$idDOKTER}"
+}
+
+object DestinasiDetailPerawatan : DestinasiNavigasi{
+    override val route = "detail perawatan"
+    override val titleRes = "Detail Perawatan"
+    const val idPERAWATAN = "idperawatan"
+    val routeWithArg = "$route/{$idPERAWATAN}"
 }
 
 object UpdateJenis: DestinasiNavigasi {
@@ -77,4 +92,16 @@ object UpdateJenis: DestinasiNavigasi {
     val routeWithArg = "$route/{$idJENIS}"
 }
 
+object UpdateDokter: DestinasiNavigasi {
+    override val route = "update dokter"
+    override val titleRes = "Update Dokter"
+    const val idDOKTER = "iddokter"
+    val routeWithArg = "$route/{$idDOKTER}"
+}
 
+object UpdatePerawatan: DestinasiNavigasi {
+    override val route = "update perawatan"
+    override val titleRes = "Update Perawatan"
+    const val idPERAWATAN = "idperawatan"
+    val routeWithArg = "$route/{$idPERAWATAN}"
+}

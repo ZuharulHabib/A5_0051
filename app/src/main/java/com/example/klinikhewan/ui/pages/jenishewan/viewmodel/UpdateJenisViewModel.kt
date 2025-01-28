@@ -8,7 +8,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.klinikhewan.repository.JenisRepository
 import com.example.klinikhewan.ui.navigation.UpdateJenis
-
 import kotlinx.coroutines.launch
 
 class UpdateJenisViewModel(

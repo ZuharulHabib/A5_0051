@@ -13,35 +13,36 @@ import com.example.klinikhewan.ui.navigation.DestinasiDetailDokter
 import kotlinx.coroutines.launch
 import java.io.IOException
 
-sealed class DetailDktrUiState {
-    data class Success(val dokter: Dokter) : DetailDktrUiState()
+sealed class DetailDktrUiState{
+    data class Success(val dokter: Dokter): DetailDktrUiState()
     object Error : DetailDktrUiState()
     object Loading : DetailDktrUiState()
 }
 
 class DetailDokterViewModel(
     savedStateHandle: SavedStateHandle,
-    private val dokterRepository: DokterRepository
-) : ViewModel() {
+    private val dktr: DokterRepository
+
+) : ViewModel(){
 
     var dokterDetailState: DetailDktrUiState by mutableStateOf(DetailDktrUiState.Loading)
         private set
 
-    private val _idDokter: String = checkNotNull(savedStateHandle[DestinasiDetailDokter.idDOKTER])
+    private val _iddokter: String = checkNotNull(savedStateHandle[DestinasiDetailDokter.idDOKTER])
 
     init {
-        getDokterById()
+        getDokterbyId()
     }
 
-    fun getDokterById() {
+    fun getDokterbyId(){
         viewModelScope.launch {
             dokterDetailState = DetailDktrUiState.Loading
             dokterDetailState = try {
-                val dokter = dokterRepository.getDokterById(_idDokter)
+                val dokter = dktr.getDokterById(_iddokter)
                 DetailDktrUiState.Success(dokter)
             } catch (e: IOException) {
                 DetailDktrUiState.Error
-            } catch (e: HttpException) {
+            } catch (e: HttpException){
                 DetailDktrUiState.Error
             }
         }

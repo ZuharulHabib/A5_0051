@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.klinikhewan.model.Jenis
 import com.example.klinikhewan.repository.JenisRepository
-
 import kotlinx.coroutines.launch
 
 class InsertJnsViewModel( private val jns: JenisRepository): ViewModel(){

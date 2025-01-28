@@ -1,6 +1,8 @@
 package com.example.klinikhewan.ui.pages.dokter.view
 
+
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,18 +14,21 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -38,11 +43,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -58,12 +65,14 @@ import com.example.klinikhewan.ui.pages.dokter.viewmodel.HomeDokterViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeDokterScreen(
-    navigateToAddEntry: () -> Unit,
+    navigateToAdd: () -> Unit,
+    navigateToBack: () -> Unit,
+    onDetailClickDokter: (String) -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClickDokter: (String) -> Unit = {},
     viewModel: HomeDokterViewModel = viewModel(factory = PenyediaViewModel.Factory)
-){
+) {
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior()
+
     Scaffold(
         modifier = modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
@@ -76,21 +85,19 @@ fun HomeDokterScreen(
                 }
             )
         },
-        floatingActionButton = {
-            FloatingActionButton(
-                onClick = navigateToAddEntry,
-                shape = MaterialTheme.shapes.medium,
-                modifier = Modifier.padding(18.dp)
-            ){
-                Icon(imageVector = Icons.Default.Add, contentDescription = "Add Kontak")
-            }
+        bottomBar = {
+            CustomBottomBarDokter(
+                navigateToAdd = navigateToAdd,
+                navigateToBack = navigateToBack,
+            )
         },
-    ){ innerPadding ->
-        HomeDktrStatus(
+    ) { innerPadding ->
+
+        HomeDokterStatus(
             homeDktrUiState = viewModel.dktrUiState,
             retryAction = { viewModel.getDktr() },
             modifier = Modifier.padding(innerPadding),
-            onDetailClickDokter = onDetailClickDokter,
+            onDetailClick = onDetailClickDokter,
             onDeleteClick = {
                 viewModel.deleteDktr(it.iddokter)
                 viewModel.getDktr()
@@ -99,63 +106,130 @@ fun HomeDokterScreen(
     }
 }
 
+@Composable
+fun CustomBottomBarDokter(
+    navigateToAdd: () -> Unit,
+    navigateToBack: () -> Unit,
+) {
+    BottomAppBar(
+        containerColor = Color(0xFF4CAF50),
+        contentColor = Color.White,
+        tonalElevation = 8.dp,
+        modifier = Modifier
+            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            IconButtonWithRoundedBackground(
+                iconRes = R.drawable.baseline_add_reaction_24,
+                onClick = navigateToAdd
+            )
+            IconButtonWithRoundedBackground(
+                iconRes = R.drawable.baseline_assignment_24,
+                onClick = navigateToBack
+            )
+        }
+    }
+}
 
 
 @Composable
-fun HomeDktrStatus(
+fun IconButtonWithRoundedBackground(
+    iconRes: Int,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(64.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(
+                color = Color(0xFFFFF0F0),
+            )
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
+    ) {
+        Icon(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(36.dp),
+            tint = Color(0xFF4CAF50)
+        )
+    }
+}
+
+
+@Composable
+fun HomeDokterStatus(
     homeDktrUiState: HomeDktrUiState,
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    onDetailClickDokter: (String) -> Unit,
+    onDetailClick: (String) -> Unit,
     onDeleteClick: (Dokter) -> Unit = {},
-){
+) {
     when (homeDktrUiState) {
-        is HomeDktrUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+        is HomeDktrUiState.Loading -> OnDokterLoading(modifier = modifier.fillMaxSize())
+
         is HomeDktrUiState.Success ->
             if (homeDktrUiState.dokter.isEmpty()) {
-                return Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(text = "Tidak ada data Jenis")
+                Box(modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(text = "Tidak ada data dokter")
                 }
             } else {
-                DktrLayout(
+                DokterLayout(
                     dokter = homeDktrUiState.dokter,
                     modifier = modifier.fillMaxWidth(),
                     onDetailClick = {
-                        onDetailClickDokter(it.iddokter)
+                        onDetailClick(it.iddokter)
                     },
                     onDeleteClick = {
                         onDeleteClick(it)
                     }
                 )
             }
-        is HomeDktrUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+        is HomeDktrUiState.Error -> OnDokterError(
+            retryAction,
+            modifier = modifier.fillMaxSize()
+        )
+    }
+}
+
+
+@Composable
+fun OnDokterLoading(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier,
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(R.drawable.logoanimal),
+            contentDescription = stringResource(R.string.loading),
+            modifier = Modifier.size(150.dp)
+        )
     }
 }
 
 @Composable
-fun OnLoading(modifier: Modifier = Modifier) {
-    Image(
-        modifier = modifier.size(200.dp),
-        painter = painterResource(R.drawable.logoanimal),
-        contentDescription = stringResource(R.string.loading)
-    )
-}
-
-
-@Composable
-fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
+fun OnDokterError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
-    )  {
+    ) {
         Image(
             painter = painterResource(id = R.drawable.error),
-            contentDescription = ""
+            contentDescription = "No network"
         )
         Text(
             text = stringResource(R.string.loading_failed),
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            style = MaterialTheme.typography.bodyMedium,
+            textAlign = TextAlign.Center
         )
         Button(
             onClick = retryAction
@@ -165,25 +239,25 @@ fun OnError(retryAction: () -> Unit, modifier: Modifier = Modifier) {
     }
 }
 
+
 @Composable
-fun DktrLayout(
+fun DokterLayout(
     dokter: List<Dokter>,
     modifier: Modifier = Modifier,
     onDetailClick: (Dokter) -> Unit,
     onDeleteClick: (Dokter) -> Unit = {},
-){
+) {
     LazyColumn(
         modifier = modifier,
         contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        items(dokter){kontak ->
-            DktrCard(
+        items(dokter) { kontak ->
+            DokterCard(
                 dokter = kontak,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable {
-                        onDetailClick(kontak)},
+                    .clickable { onDetailClick(kontak) },
                 onDeleteClick = {
                     onDeleteClick(kontak)
                 }
@@ -193,67 +267,109 @@ fun DktrLayout(
 }
 
 @Composable
-fun DktrCard(
+fun DokterCard(
     dokter: Dokter,
     modifier: Modifier = Modifier,
     onDeleteClick: (Dokter) -> Unit = {}
 ) {
     var deleteConfirmationRequired by rememberSaveable { mutableStateOf(false) }
+
     Card(
-        modifier = modifier,
-        shape = MaterialTheme.shapes.medium,
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        modifier = modifier
+            .padding(horizontal = 8.dp, vertical = 4.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color(0xFF4CAF50),
+            contentColor = MaterialTheme.colorScheme.onSurface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp),
+                .padding(14.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = dokter.iddokter,
-                    style = MaterialTheme.typography.titleLarge
-                )
-                Spacer(Modifier.weight(1f))
-                IconButton(onClick = {deleteConfirmationRequired = true}) {
-                    Icon(
-                        imageVector = Icons.Default.Delete,
-                        contentDescription = null,
-                    )
-                }
-                Text(
                     text = dokter.namadokter,
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color(0xFFFFF0F0  ),
+                    fontWeight = FontWeight.Bold
+                )
+                IconButton(onClick = { deleteConfirmationRequired = true }) {
+                    Box(
+                        modifier = Modifier
+                            .size(48.dp)
+                            .clip(CircleShape)
+                            .background(Color(0xFFFFD1D1)),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete",
+                            tint = Color(0xFF4CAF50),
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+                }
+            }
+            Divider(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                thickness = 1.dp
+            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_personal_injury_24),
+                    contentDescription = null,
+                    tint = Color(0xFFFFF0F0 ),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = dokter.kontak,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
-            Text(
-                text = dokter.kontak,
-                style = MaterialTheme.typography.titleMedium
-            )
-            Text(
-                text = dokter.spesialisasi,
-                style = MaterialTheme.typography.titleMedium
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_pets_24),
+                    contentDescription = null,
+                    tint = Color(0xFFFFF0F0 ),
+                    modifier = Modifier.size(18.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(
+                    text = dokter.spesialisasi,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+            }
         }
     }
+
     if (deleteConfirmationRequired) {
-        DeleteConfirmationDialog(
+        DeleteConfirmationDialogDokter(
             onDeleteConfirm = {
                 deleteConfirmationRequired = false
                 onDeleteClick(dokter)
             },
-            onDeleteCancel =  {
+            onDeleteCancel = {
                 deleteConfirmationRequired = false
-            }, modifier = Modifier.padding(8.dp)
+            },
+            modifier = Modifier.padding(16.dp)
         )
     }
 }
 
+
 @Composable
-private fun DeleteConfirmationDialog(
+private fun DeleteConfirmationDialogDokter(
     onDeleteConfirm: () -> Unit,
     onDeleteCancel: () -> Unit,
     modifier: Modifier = Modifier
@@ -270,7 +386,7 @@ private fun DeleteConfirmationDialog(
         },
         text = {
             Text(
-                "Apakah Anda yakin ingin menghapus data ini? Tindakan ini tidak dapat dibatalkan.",
+                "Apakah Anda yakin ingin menghapus data? Pastikan data yang dihapus benar.",
                 fontSize = 16.sp
             )
         },

@@ -5,14 +5,26 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.klinikhewan.model.Jenis
 import com.example.klinikhewan.model.Pasien
+import com.example.klinikhewan.repository.JenisRepository
 import com.example.klinikhewan.repository.PasienRepository
 import kotlinx.coroutines.launch
 
 
-class InsertPsnViewModel( private val psn: PasienRepository): ViewModel(){
+class InsertPsnViewModel(
+    private val psn: PasienRepository,
+    private val jns: JenisRepository
+): ViewModel(){
     var uiStatePsn by mutableStateOf(InsertPsnUiState())
         private set
+
+    var listjenis by mutableStateOf(listOf<Jenis>())
+        private set
+
+    init {
+        LoadJenis()
+    }
 
     fun updateInsertPsnState(insertPsnUiEvent: InsertPsnUiEvent){
         uiStatePsn = InsertPsnUiState(
@@ -25,6 +37,16 @@ class InsertPsnViewModel( private val psn: PasienRepository): ViewModel(){
             try {
                 psn.insertPasien(uiStatePsn.insertPsnUiEvent.toPasien())
             }catch (e: Exception){
+                e.printStackTrace()
+            }
+        }
+    }
+
+    fun LoadJenis(){
+        viewModelScope.launch {
+            try {
+                listjenis = jns.getAllJenis().data
+            } catch (e : Exception){
                 e.printStackTrace()
             }
         }
@@ -69,4 +91,3 @@ fun Pasien.toInsertPsnUiEvent(): InsertPsnUiEvent = InsertPsnUiEvent(
 fun Pasien.toUiStatePsn(): InsertPsnUiState = InsertPsnUiState(
     insertPsnUiEvent = toInsertPsnUiEvent()
 )
-

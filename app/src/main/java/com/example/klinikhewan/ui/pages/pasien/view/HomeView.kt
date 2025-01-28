@@ -40,9 +40,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -67,6 +65,7 @@ fun HomeScreen(
     navigateToEntry: () -> Unit,
     navigateToSeeDokter: () -> Unit,
     navigateToSeeJenis: () -> Unit,
+    navigateToSeePerawatan: () -> Unit,
     onDetailClick: (String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = viewModel(factory = PenyediaViewModel.Factory)
@@ -90,7 +89,8 @@ fun HomeScreen(
             CustomBottomBar(
                 navigateToEntry = navigateToEntry,
                 navigateToSeeDokter = navigateToSeeDokter,
-                navigateToSeeJenis = navigateToSeeJenis
+                navigateToSeeJenis = navigateToSeeJenis,
+                navigateToSeePerawatan = navigateToSeePerawatan
             )
         },
     ) { innerPadding ->
@@ -113,7 +113,8 @@ fun HomeScreen(
 fun CustomBottomBar(
     navigateToEntry: () -> Unit,
     navigateToSeeDokter: () -> Unit,
-    navigateToSeeJenis: () -> Unit
+    navigateToSeeJenis: () -> Unit,
+    navigateToSeePerawatan: () -> Unit
 ) {
     // `BottomAppBar` tetap dipertahankan
     BottomAppBar(
@@ -143,7 +144,7 @@ fun CustomBottomBar(
             )
             IconButtonWithRoundedBackground(
                 iconRes = R.drawable.baseline_add_reaction_24,
-                onClick = {}
+                onClick = navigateToSeePerawatan
             )
         }
     }

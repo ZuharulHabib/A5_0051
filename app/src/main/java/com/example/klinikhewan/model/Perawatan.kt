@@ -6,19 +6,19 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Perawatan(
     @SerialName("id_perawatan")
-    val id_perawatan: Int = 0,
+    val idperawatan: String,
 
     @SerialName("id_hewan")
-    val id_hewan: Int = 0,
+    val idhewan: String,
 
     @SerialName("id_dokter")
-    val id_dokter: Int = 0,
+    val iddokter: String,
 
     @SerialName("tanggal_perawatan")
-    val tanggal_perawatan: String = "",
+    val tanggalperawatan: String,
 
     @SerialName("detail_perawatan")
-    val detail_perawatan: String = ""
+    val detailperawatan: String
 )
 
 @Serializable

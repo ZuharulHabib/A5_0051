@@ -1,5 +1,4 @@
-package com.example.klinikhewan.ui.pages.dokter.view
-
+package com.example.klinikhewan.ui.pages.perawatan.view
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +12,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.ThumbUp
+import androidx.compose.material.icons.filled.MailOutline
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
@@ -37,38 +36,37 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.klinikhewan.model.Dokter
+import com.example.klinikhewan.model.Perawatan
 import com.example.klinikhewan.ui.PenyediaViewModel
 import com.example.klinikhewan.ui.customwidget.CostumeTopAppBar
-import com.example.klinikhewan.ui.navigation.DestinasiDetailDokter
-import com.example.klinikhewan.ui.pages.dokter.viewmodel.DetailDktrUiState
-import com.example.klinikhewan.ui.pages.dokter.viewmodel.DetailDokterViewModel
+import com.example.klinikhewan.ui.navigation.DestinasiDetailPerawatan
 import com.example.klinikhewan.ui.pages.pasien.view.OnError
 import com.example.klinikhewan.ui.pages.pasien.view.OnLoading
-
+import com.example.klinikhewan.ui.pages.perawatan.viewmodel.DetailPerawatanViewModel
+import com.example.klinikhewan.ui.pages.perawatan.viewmodel.DetailPrwtnUiState
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DetailDokterScreen(
+fun DetailPerawatanScreen(
     navigateBack: () -> Unit,
-    navigateToItemUpdateDktr: () -> Unit,
+    navigateToItemUpdatePrwtn: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailDokterViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: DetailPerawatanViewModel = viewModel(factory = PenyediaViewModel.Factory)
 ) {
     Scaffold(
         topBar = {
             CostumeTopAppBar(
-                title = DestinasiDetailDokter.titleRes,
+                title = DestinasiDetailPerawatan.titleRes,
                 canNavigateBack = true,
                 navigateUp = navigateBack,
                 onRefresh = {
-                    viewModel.getDokterbyId()
+                    viewModel.getPerawatanbyId()
                 }
             )
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = navigateToItemUpdateDktr,
+                onClick = navigateToItemUpdatePrwtn,
                 shape = RoundedCornerShape(50),
                 containerColor = MaterialTheme.colorScheme.secondary,
                 contentColor = MaterialTheme.colorScheme.onSecondary,
@@ -76,29 +74,29 @@ fun DetailDokterScreen(
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
-                    contentDescription = "Edit Kontak"
+                    contentDescription = "Edit Jenis"
                 )
             }
         }
     ) { innerPadding ->
-        DetailStatus(
+        DetailPerawatanStatus(
             modifier = Modifier.padding(innerPadding),
-            detailDktrUiState = viewModel.dokterDetailState,
-            retryAction = { viewModel.getDokterbyId() }
+            detailPrwtnUiState = viewModel.perawatanDetailState,
+            retryAction = { viewModel.getPerawatanbyId() }
         )
     }
 }
 
 @Composable
-fun DetailStatus(
+fun DetailPerawatanStatus(
     retryAction: () -> Unit,
     modifier: Modifier = Modifier,
-    detailDktrUiState: DetailDktrUiState
+    detailPrwtnUiState: DetailPrwtnUiState
 ) {
-    when (detailDktrUiState) {
-        is DetailDktrUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
-        is DetailDktrUiState.Success -> {
-            if (detailDktrUiState.dokter.iddokter.isEmpty()) {
+    when (detailPrwtnUiState) {
+        is DetailPrwtnUiState.Loading -> OnLoading(modifier = modifier.fillMaxSize())
+        is DetailPrwtnUiState.Success -> {
+            if (detailPrwtnUiState.perawatan.idperawatan.isEmpty()) {
                 Box(
                     modifier = modifier.fillMaxSize(), contentAlignment = Alignment.Center
                 ) {
@@ -108,22 +106,25 @@ fun DetailStatus(
                     )
                 }
             } else {
-                ItemDetailDktr(
-                    dokter = detailDktrUiState.dokter, modifier = modifier.fillMaxWidth()
+                ItemDetailPerawatan(
+                    perawatan = detailPrwtnUiState.perawatan, modifier = modifier.fillMaxWidth()
                 )
             }
         }
-        is DetailDktrUiState.Error -> OnError(
-            retryAction,
-            modifier = modifier.fillMaxSize()
-        )
+        is DetailPrwtnUiState.Error -> OnError(retryAction, modifier = modifier.fillMaxSize())
+        DetailPrwtnUiState.Error -> TODO()
+        DetailPrwtnUiState.Loading -> TODO()
+        is DetailPrwtnUiState.Success -> TODO()
+        DetailPrwtnUiState.Error -> TODO()
+        DetailPrwtnUiState.Loading -> TODO()
+        is DetailPrwtnUiState.Success -> TODO()
     }
 }
 
 @Composable
-fun ItemDetailDktr(
+fun ItemDetailPerawatan(
     modifier: Modifier = Modifier,
-    dokter: Dokter
+    perawatan: Perawatan
 ) {
     Card(
         modifier = modifier
@@ -139,19 +140,21 @@ fun ItemDetailDktr(
         Column(
             modifier = Modifier.padding(16.dp)
         ) {
-            ComponentDetailDktr(judul = "Id Dokter", isinya = dokter.iddokter, icon = Icons.Default.Info)
+            ComponentDetailPerawatan(judul = "Id Perawatan", isinya = perawatan.idperawatan, icon = Icons.Default.Info)
             Divider(modifier = Modifier.padding(vertical = 8.dp))
-            ComponentDetailDktr(judul = "Nama Dokter", isinya = dokter.namadokter, icon = Icons.Default.Person)
+            ComponentDetailPerawatan(judul = "Id Hewan", isinya = perawatan.idhewan, icon = Icons.Default.Info)
             Divider(modifier = Modifier.padding(vertical = 8.dp))
-            ComponentDetailDktr(judul = "Kontak Terhubung", isinya = dokter.kontak, icon = Icons.Default.Call)
+            ComponentDetailPerawatan(judul = "Id Dokter", isinya = perawatan.iddokter, icon = Icons.Default.Info)
             Divider(modifier = Modifier.padding(vertical = 8.dp))
-            ComponentDetailDktr(judul = "Spesialisasi", isinya = dokter.spesialisasi, icon = Icons.Default.ThumbUp)
+            ComponentDetailPerawatan(judul = "Tanggal Perawatan", isinya = perawatan.tanggalperawatan, icon = Icons.Default.DateRange)
+            Divider(modifier = Modifier.padding(vertical = 8.dp))
+            ComponentDetailPerawatan(judul = "Detail Perawatan", isinya = perawatan.detailperawatan, icon = Icons.Default.Star)
         }
     }
 }
 
 @Composable
-fun ComponentDetailDktr(
+fun ComponentDetailPerawatan(
     modifier: Modifier = Modifier,
     judul: String,
     isinya: String,

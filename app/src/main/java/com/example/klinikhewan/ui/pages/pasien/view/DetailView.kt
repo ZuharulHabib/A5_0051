@@ -42,7 +42,8 @@ fun DetailScreenPasien(
     navigateBack: () -> Unit,
     navigateToItemUpdatePsn: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: DetailViewModel = viewModel(factory = PenyediaViewModel.Factory)
+    viewModel: DetailViewModel = viewModel(factory = PenyediaViewModel.Factory),
+    navigateToAddPerawatan: () -> Unit
 ) {
     Scaffold(
         topBar = {

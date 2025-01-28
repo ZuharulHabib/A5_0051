@@ -4,32 +4,33 @@ import com.example.klinikhewan.model.AllPerawatanResponse
 import com.example.klinikhewan.model.Perawatan
 import com.example.klinikhewan.model.PerawatanDetailResponse
 import retrofit2.Response
-import retrofit2.http.*
+import retrofit2.http.Body
+import retrofit2.http.DELETE
+import retrofit2.http.GET
+import retrofit2.http.Headers
+import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.Path
 
 interface PerawatanService {
     @Headers(
         "Accept: application/json",
-        "Content-Type: application/json"
+        "Content-Type: application/json",
     )
 
-    // Insert a new Perawatan (Treatment)
     @POST("perawatan/store")
     suspend fun insertPerawatan(@Body perawatan: Perawatan)
 
-    // Get All Perawatan (Treatments)
-    @GET("perawatan/")
+    @GET("perawatan/.")
     suspend fun getAllPerawatan(): AllPerawatanResponse
 
-    // Get Perawatan by ID (Treatment Detail)
     @GET("perawatan/{id_perawatan}")
-    suspend fun getPerawatanById(@Path("id_perawatan") id_perawatan: Int): PerawatanDetailResponse
+    suspend fun getPerawatanById(@Path("id_perawatan") idperawatan: String): PerawatanDetailResponse
 
-    // Update Perawatan Data (Treatment)
     @PUT("perawatan/{id_perawatan}")
-    suspend fun updatePerawatan(@Path("id_perawatan") id_perawatan: Int, @Body perawatan: Perawatan)
+    suspend fun updatePerawatan(@Path("id_perawatan") idperawatan: String, @Body perawatan: Perawatan)
 
-    // Delete Perawatan (Treatment)
     @DELETE("perawatan/{id_perawatan}")
-    suspend fun deletePerawatan(@Path("id_perawatan") id_perawatan: Int): Response<Void>
-}
+    suspend fun deletePerawatan(@Path("id_perawatan") idperawatan: String): Response<Void>
 
+}
